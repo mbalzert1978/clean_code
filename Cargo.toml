@@ -1,0 +1,23 @@
+[package]
+name = "clean_code"
+version = "0.1.0"
+edition = "2021"
+
+
+[workspace]
+members = [
+    "src/domain",
+    "src/application",
+    "src/infrastructure",
+    "src/presentation",
+]
+
+[dependencies]
+application = { path = "src/application" }
+infrastructure = { path = "src/infrastructure" }
+presentation = { path = "src/presentation" }
+
+
+[[bin]]
+name = "CleanCode"
+path = "src/main.rs"
