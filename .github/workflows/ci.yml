@@ -1,0 +1,50 @@
+name: Rust CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+        rust: [stable]
+
+    steps:
+    # Step 1: Checkout the code
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    # Step 2: Set up Rust
+    - name: Set up Rust
+      uses: actions-rs/toolchain@v1
+      with:
+        toolchain: ${{ matrix.rust }}
+        override: true
+
+    # Step 3: Install dependencies for Clippy and Rustfmt
+    - name: Install Clippy and Rustfmt
+      run: rustup component add clippy rustfmt
+
+    # Step 4: Run Clippy
+    - name: Run Clippy (Linting)
+      run: cargo clippy --all-targets -- -D warnings
+
+    # Step 5: Run Rustfmt (Code formatting check)
+    - name: Run Rustfmt (Check formatting)
+      run: cargo fmt -- --check
+
+    # Step 6: Run Unit Tests
+    - name: Run Tests
+      run: cargo test --verbose
+
+    # Step 7: Compile the project (Release mode)
+    - name: Build in Release Mode
+      run: cargo build --release
